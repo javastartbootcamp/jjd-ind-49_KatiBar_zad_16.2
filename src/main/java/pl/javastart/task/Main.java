@@ -22,26 +22,22 @@ public class Main {
     }
 
     private void printTimes(LocalDateTime dateTimeFromUser) {
-//        if (dateTimeFromUser.toString().length() == 16) {
-//            StringBuilder builder = new StringBuilder().append(dateTimeFromUser).append(":00");
-//            dateTimeFromUser = LocalDateTime.of(dateTimeFromUser.getYear(), dateTimeFromUser.getMonth(),
-//                    dateTimeFromUser.getDayOfMonth(), dateTimeFromUser.getHour(), dateTimeFromUser.getMinute(), 00);
-//        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTimeLocal = calculateLocalTime(dateTimeFromUser);
-        System.out.println("Czas lokalny: " + dateTimeLocal.toString().replace('T', ' '));
-        LocalDateTime dateTimeUTC = calculateTime(dateTimeFromUser, "UTC");
-        System.out.println("UTC: " + dateTimeUTC.toString().replace('T', ' '));
-        LocalDateTime dateTimeLondon = calculateTime(dateTimeLocal, "Europe/London");
-        System.out.println("Londyn: " + dateTimeLondon.toString().replace('T', ' '));
-        LocalDateTime dateTimeLosAngeles = calculateTime(dateTimeLocal, "America/Los_Angeles");
-        System.out.println("Los Angeles: " + dateTimeLosAngeles.toString().replace('T', ' '));
-        LocalDateTime dateTimeSydney = calculateTime(dateTimeLocal, "Australia/Sydney");
-        System.out.println("Sydney: " + dateTimeSydney.toString().replace('T', ' '));
+        System.out.println("Czas lokalny: " + formatter.format(dateTimeLocal));
+        ZonedDateTime dateTimeUTC = calculateTime(dateTimeFromUser, ZoneId.of("UTC"));
+        System.out.println("UTC: " + formatter.format(dateTimeUTC));
+        ZonedDateTime dateTimeLondon = calculateTime(dateTimeLocal, ZoneId.of("Europe/London"));
+        System.out.println("Londyn: " + formatter.format(dateTimeLondon));
+        ZonedDateTime dateTimeLosAngeles = calculateTime(dateTimeLocal, ZoneId.of("America/Los_Angeles"));
+        System.out.println("Los Angeles: " + formatter.format(dateTimeLosAngeles));
+        ZonedDateTime dateTimeSydney = calculateTime(dateTimeLocal, ZoneId.of("Australia/Sydney"));
+        System.out.println("Sydney: " + formatter.format(dateTimeSydney));
     }
 
-    private LocalDateTime calculateTime(LocalDateTime dateTimeLocal, String zoneName) {
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(dateTimeLocal.atZone(ZoneId.of("Europe/Berlin")).toInstant(), ZoneId.of(zoneName));
-        return zonedDateTime.toLocalDateTime();
+    private ZonedDateTime calculateTime(LocalDateTime dateTimeLocal, ZoneId zoneId) {
+        ZonedDateTime zdf = dateTimeLocal.atZone(ZoneId.of("Europe/Berlin"));
+        return zdf.withZoneSameInstant(zoneId);
     }
 
     private LocalDateTime calculateLocalTime(LocalDateTime dateTimeFromUser) {
